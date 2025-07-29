@@ -4,11 +4,15 @@ set -e
 # Options passed from devcontainer-feature.json
 VERSION="${VERSION:-"latest"}"
 
-# Load common-utils to use 'check_packages'
-. /usr/local/share/common-utils/main.sh
+# Ensure apt-get is available
+if ! type apt-get > /dev/null 2>&1; then
+    echo "This feature requires apt-get to be available."
+    exit 1
+fi
 
-# curl, gzip, and ca-certificates are required
-check_packages curl gzip ca-certificates
+# Update package list and install dependencies
+apt-get update
+apt-get install -y --no-install-recommends curl gzip ca-certificates
 
 echo "Activating feature 'coursier' version ${VERSION}"
 
