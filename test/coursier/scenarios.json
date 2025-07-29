@@ -1,0 +1,8 @@
+{
+    "coursier": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "coursier": {}
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "Coursier",
+    "id": "coursier",
+    "version": "1.0.0",
+    "description": "Installs the Coursier CLI for Scala development.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest"
+            ],
+            "default": "latest",
+            "description": "The version of Coursier to install."
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
