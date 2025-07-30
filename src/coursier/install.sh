@@ -34,5 +34,5 @@ cs setup --yes
 
 # Source .bash_profile to make the PATH available to the current shell
 # and add it to .bashrc for future non-login shells.
-echo 'source ~/.bash_profile' >> ~/.bashrc
-source ~/.bash_profile
+echo '. ~/.bash_profile' >> ~/.bashrc
+. ~/.bash_profile
