@@ -50,12 +50,19 @@ chmod +x /usr/local/bin/cs
 # We execute this as the container user to ensure the environment is set up for them.
 USERNAME="${_CONTAINER_USER:-"root"}"
 
+INSTALL_DIR="/usr/local/coursier/bin"
+mkdir -p "${INSTALL_DIR}"
+
 if [ "${USERNAME}" = "root" ]; then
-    cs setup --install-dir /usr/local/bin --yes
+    cs setup --install-dir "${INSTALL_DIR}" --yes
 else
     # The user might not exist yet, so we need to be careful.
     # However, by the time this script runs, the user should have been created.
-    su - "${USERNAME}" -c "cs setup --install-dir /usr/local/bin --yes"
+    su - "${USERNAME}" -c "cs setup --install-dir ${INSTALL_DIR} --yes"
 fi
+
+# Add the installation directory to the PATH for all users
+echo "export PATH=\$PATH:${INSTALL_DIR}" > /etc/profile.d/coursier.sh
+chmod +x /etc/profile.d/coursier.sh
 
 echo "Coursier feature installed successfully."
