@@ -27,12 +27,6 @@ curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d >cs
 chmod +x cs
 
 # Run setup
-./cs setup --yes
+./cs setup --yes --install-dir /usr/local/bin
 
 rm -rf ./cs
-
-. ~/.profile
-
-echo "$PATH"
-
-whoami
