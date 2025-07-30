@@ -23,8 +23,13 @@ esac
 # Download and install coursier
 DOWNLOAD_URL="https://github.com/coursier/launchers/raw/master/cs-${CS_ARCH}.gz"
 echo "Downloading Coursier launcher from ${DOWNLOAD_URL}"
-curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d >/usr/local/bin/cs
-chmod +x /usr/local/bin/cs
+curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d >cs
+chmod +x cs
 
 # Run setup
-cs setup --yes
+./cs setup --yes --install-dir /usr/local/bin
+
+rm -rf cs
+
+echo $(which cs) "installed successfully."
+echo $(which scala) "installed successfully."
