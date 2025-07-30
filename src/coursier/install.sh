@@ -51,11 +51,11 @@ chmod +x /usr/local/bin/cs
 USERNAME="${_CONTAINER_USER:-"root"}"
 
 if [ "${USERNAME}" = "root" ]; then
-    cs setup --yes
+    cs setup --install-dir /usr/local/bin --yes
 else
     # The user might not exist yet, so we need to be careful.
     # However, by the time this script runs, the user should have been created.
-    su - "${USERNAME}" -c "cs setup --yes"
+    su - "${USERNAME}" -c "cs setup --install-dir /usr/local/bin --yes"
 fi
 
 echo "Coursier feature installed successfully."
