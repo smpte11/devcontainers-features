@@ -26,5 +26,13 @@ echo "Downloading Coursier launcher from ${DOWNLOAD_URL}"
 curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d > /usr/local/bin/cs
 chmod +x /usr/local/bin/cs
 
+# Create .bash_profile if it doesn't exist, so cs setup will add the PATH
+touch ~/.bash_profile
+
 # Run setup
 cs setup --yes
+
+# Source .bash_profile to make the PATH available to the current shell
+# and add it to .bashrc for future non-login shells.
+echo 'source ~/.bash_profile' >> ~/.bashrc
+source ~/.bash_profile
