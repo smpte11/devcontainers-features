@@ -30,3 +30,7 @@ chmod +x cs
 ./cs setup --yes --install-dir /usr/local/bin
 
 rm -rf ./cs
+
+# chmod +x /usr/local/bin/scala
+
+ls -la /usr/local/bin/scala
