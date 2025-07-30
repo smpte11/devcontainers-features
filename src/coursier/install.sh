@@ -1,22 +1,15 @@
 #!/bin/sh
 set -e
 
-# Options passed from devcontainer-feature.json
-VERSION="${VERSION:-"latest"}"
-
-# Ensure apt-get is available
+# Install dependencies
 if ! type apt-get > /dev/null 2>&1; then
     echo "This feature requires apt-get to be available."
     exit 1
 fi
-
-# Update package list and install dependencies
 apt-get update
 apt-get install -y --no-install-recommends curl gzip ca-certificates
 
-echo "Activating feature 'coursier' version ${VERSION}"
-
-# Determine architecture for coursier launchers
+# Determine architecture
 ARCHITECTURE="$(uname -m)"
 case ${ARCHITECTURE} in
     x86_64) CS_ARCH="x86_64-pc-linux";;
@@ -27,41 +20,17 @@ case ${ARCHITECTURE} in
         ;;
 esac
 
-# Construct download URL for the native launcher
-if [ "${VERSION}" = "latest" ]; then
-    DOWNLOAD_URL="https://github.com/coursier/launchers/raw/master/cs-${CS_ARCH}.gz"
-else
-    # Add 'v' prefix to version if it doesn't exist for release tags
-    if ! echo "${VERSION}" | grep -q "^v"; then
-        VERSION="v${VERSION}"
-    fi
-    DOWNLOAD_URL="https://github.com/coursier/coursier/releases/download/${VERSION}/cs-${CS_ARCH}.gz"
-fi
-
+# Download and install coursier
+DOWNLOAD_URL="https://github.com/coursier/launchers/raw/master/cs-${CS_ARCH}.gz"
 echo "Downloading Coursier launcher from ${DOWNLOAD_URL}"
-
-# Download, decompress, and install the 'cs' launcher
 curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d > /usr/local/bin/cs
 chmod +x /usr/local/bin/cs
 
-# Run `cs setup` to install the Scala development environment.
-# This installs a JVM if needed, and tools like scala, scalac, and sbt.
-# It also updates the user's profile files to add the coursier bin directory to the PATH.
-# We execute this as the container user to ensure the environment is set up for them.
-USERNAME="${_CONTAINER_USER:-"root"}"
+# Run setup
+cs setup --yes
 
-INSTALL_DIR="/usr/local/coursier/bin"
-mkdir -p "${INSTALL_DIR}"
-
-if [ "${USERNAME}" = "root" ]; then
-    cs setup --install-dir "${INSTALL_DIR}" --yes
-else
-    # The user might not exist yet, so we need to be careful.
-    # However, by the time this script runs, the user should have been created.
-    su - "${USERNAME}" -c "cs setup --install-dir ${INSTALL_DIR} --yes"
-fi
-
-# Symlink all executables to /usr/local/bin
-find "${INSTALL_DIR}" -type f -executable -exec ln -s {} /usr/local/bin/ \;
-
-echo "Coursier feature installed successfully."
+# Add the coursier bin to the path for the current and future shells
+INSTALL_DIR=$(cs install-dir)
+echo "export PATH=\$PATH:${INSTALL_DIR}" >> ~/.bashrc
+echo "export PATH=\$PATH:${INSTALL_DIR}" >> ~/.profile
+export PATH="$PATH:${INSTALL_DIR}"
