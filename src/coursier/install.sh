@@ -29,6 +29,10 @@ chmod +x cs
 # Run setup
 ./cs setup --yes
 
-rm -rf cs
+rm -rf ./cs
 
-cat ~/.profile
+. ~/.profile
+
+echo "$PATH"
+
+whoami
