@@ -27,9 +27,8 @@ curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d >cs
 chmod +x cs
 
 # Run setup
-./cs setup --yes --install-dir /usr/local/bin
+./cs setup --yes
 
 rm -rf cs
 
-echo $(which cs) "installed successfully."
-echo $(which scala) "installed successfully."
+cat ~/.profile
