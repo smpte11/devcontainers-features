@@ -28,9 +28,3 @@ chmod +x /usr/local/bin/cs
 
 # Run setup
 cs setup --yes
-
-# Add the coursier bin to the path for the current and future shells
-INSTALL_DIR=$(cs install-dir)
-echo "export PATH=\$PATH:${INSTALL_DIR}" >> ~/.bashrc
-echo "export PATH=\$PATH:${INSTALL_DIR}" >> ~/.profile
-export PATH="$PATH:${INSTALL_DIR}"
