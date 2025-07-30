@@ -61,8 +61,7 @@ else
     su - "${USERNAME}" -c "cs setup --install-dir ${INSTALL_DIR} --yes"
 fi
 
-# Add the installation directory to the PATH for all users
-echo "export PATH=\$PATH:${INSTALL_DIR}" > /etc/profile.d/coursier.sh
-chmod +x /etc/profile.d/coursier.sh
+# Symlink all executables to /usr/local/bin
+find "${INSTALL_DIR}" -type f -executable -exec ln -s {} /usr/local/bin/ \;
 
 echo "Coursier feature installed successfully."
