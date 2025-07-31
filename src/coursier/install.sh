@@ -26,12 +26,13 @@ echo "Downloading Coursier launcher from ${DOWNLOAD_URL}"
 curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d > /usr/local/bin/cs
 chmod +x /usr/local/bin/cs
 
-# Install coursier applications to a shared location
-INSTALL_DIR="/usr/local/coursier/bin"
-mkdir -p "${INSTALL_DIR}"
-cs setup --install-dir "${INSTALL_DIR}" --yes
+# Set cache to a shared location and run setup
+export COURSIER_CACHE="/usr/local/share/coursier-cache"
+mkdir -p "${COURSIER_CACHE}"
+cs setup --yes
 
-# Symlink all executables to /usr/local/bin
+# Symlink the applications to /usr/local/bin
+INSTALL_DIR=$(cs install-dir)
 find "${INSTALL_DIR}" -type f -executable -exec ln -s {} /usr/local/bin/ \;
 
 echo "Coursier feature installed successfully."
