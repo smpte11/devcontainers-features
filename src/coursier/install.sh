@@ -20,15 +20,22 @@ case ${ARCHITECTURE} in
         ;;
 esac
 
-# Download and install coursier
+# Create a temporary directory for the download
+TMP_DIR=$(mktemp -d)
+cleanup() {
+    rm -rf "${TMP_DIR}"
+}
+trap cleanup EXIT
+
+# Download the coursier launcher to a temporary file
 DOWNLOAD_URL="https://github.com/coursier/launchers/raw/master/cs-${CS_ARCH}.gz"
 echo "Downloading Coursier launcher from ${DOWNLOAD_URL}"
-curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d > /usr/local/bin/cs
-chmod +x /usr/local/bin/cs
+curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d > "${TMP_DIR}/cs"
+chmod +x "${TMP_DIR}/cs"
 
 # Set cache to a shared location and install launchers to /usr/local/bin
 CACHE_DIR="/usr/local/share/coursier-cache"
 mkdir -p "${CACHE_DIR}"
-cs setup --cache "${CACHE_DIR}" --install-dir /usr/local/bin --yes
+"${TMP_DIR}/cs" setup --cache "${CACHE_DIR}" --install-dir /usr/local/bin --yes
 
 echo "Coursier feature installed successfully."
