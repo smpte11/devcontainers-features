@@ -7,7 +7,7 @@ if ! type apt-get > /dev/null 2>&1; then
     exit 1
 fi
 apt-get update
-apt-get install -y --no-install-recommends curl gzip ca-certificates
+apt-get install -y --no-install-recommends curl gzip ca-certificates sudo
 
 # Determine architecture
 ARCHITECTURE="$(uname -m)"
@@ -33,9 +33,20 @@ echo "Downloading Coursier launcher from ${DOWNLOAD_URL}"
 curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d > "${TMP_DIR}/cs"
 chmod +x "${TMP_DIR}/cs"
 
-# Set cache to a shared location and install launchers to /usr/local/bin
-CACHE_DIR="/usr/local/share/coursier-cache"
-mkdir -p "${CACHE_DIR}"
-"${TMP_DIR}/cs" setup --cache "${CACHE_DIR}" --install-dir /usr/local/bin --yes
+# Run setup as the container user
+USERNAME="${_CONTAINER_USER:-"root"}"
+if [ "${USERNAME}" = "root" ]; then
+    "${TMP_DIR}/cs" setup --yes
+    INSTALL_DIR=$(cs install-dir)
+else
+    # The user might not exist yet, so we need to be careful.
+    # However, by the time this script runs, the user should have been created.
+    su - "${USERNAME}" -c "'${TMP_DIR}/cs' setup --yes"
+    INSTALL_DIR=$(su - "${USERNAME}" -c "cs install-dir")
+fi
+
+# Add the installation directory to the PATH for all users
+echo "export PATH=\$PATH:${INSTALL_DIR}" > /etc/profile.d/coursier.sh
+chmod +x /etc/profile.d/coursier.sh
 
 echo "Coursier feature installed successfully."
