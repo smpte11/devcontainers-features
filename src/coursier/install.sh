@@ -27,9 +27,9 @@ curl -sSL --fail "${DOWNLOAD_URL}" | gzip -d > /usr/local/bin/cs
 chmod +x /usr/local/bin/cs
 
 # Set cache to a shared location and run setup
-export COURSIER_CACHE="/usr/local/share/coursier-cache"
-mkdir -p "${COURSIER_CACHE}"
-cs setup --yes
+CACHE_DIR="/usr/local/share/coursier-cache"
+mkdir -p "${CACHE_DIR}"
+cs setup --cache "${CACHE_DIR}" --yes
 
 # Symlink the applications to /usr/local/bin
 INSTALL_DIR=$(cs install-dir)
