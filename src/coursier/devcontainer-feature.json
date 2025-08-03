@@ -1,0 +1,24 @@
+{
+    "name": "Coursier",
+    "id": "coursier",
+    "version": "1.0.0",
+    "description": "Installs coursier, the Scala application and artifact manager.",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest"
+            ],
+            "default": "latest",
+            "description": "The version of coursier to install."
+        },
+        "apps": {
+            "type": "string",
+            "default": "cs,scala-cli,scala,scalac,sbt,sbtn,ammonite,scalafmt",
+            "description": "A comma-separated list of applications to install."
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
