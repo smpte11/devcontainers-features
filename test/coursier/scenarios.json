@@ -1,9 +1,9 @@
 {
-    "hello": {
+    "custom_apps": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {
-            "hello": {
-                "greeting": "hello"
+            "coursier": {
+                "apps": "cs,scala"
             }
         }
     }
